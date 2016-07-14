@@ -1,0 +1,150 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Count steps with acceleration data from your Apple or Android mobile device</title><meta name="generator" content="MATLAB 8.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-07-22"><meta name="DC.source" content="StepCounter.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Count steps with acceleration data from your Apple or Android mobile device</h1><!--introduction--><p>You can use the accelerometer in your mobile device to count steps in MATLAB.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Connect to the mobile device</a></li><li><a href="#2">Collect the acceleration data</a></li><li><a href="#4">Analyze the acceleration data</a></li></ul></div><h2>Connect to the mobile device<a name="1"></a></h2><p>Use the <tt>sensorgroup</tt> object to create a connection to your mobile device. In this case, we're using an Apple iPhone 3GS, but you can use an Android device by passing <tt>AndroidMobile</tt> instead</p><pre class="codeinput">obj = sensorgroup(<span class="string">'AppleMobile'</span>);
+</pre><pre class="codeoutput">Waiting for data...
+To configure your mobile device:
+  1.  Open the Sensor Monitor app.
+  2.  Select the Network tab.
+  3.  For Host, enter 172.28.152.88, 192.168.228.1, or 192.168.22.1
+  4.  For Port, enter 50000
+  5.  Choose one or more sensor.
+  6.  Set Current Send Mode to Binary.
+  7.  Tap Start Send.
+</pre><h2>Collect the acceleration data<a name="2"></a></h2><p>Walk around for 30 seconds, then retrieve the data from the Acceleration log</p><pre class="codeinput">pause(30)
+accelVector = accellog(obj);
+</pre><p>Stop collecting data by clearing the variable from the workspace</p><pre class="codeinput">clear <span class="string">obj</span>
+</pre><h2>Analyze the acceleration data<a name="4"></a></h2><p>The acceleration data is captured in an [n x 3] array, where the 3 columns represent the x, y, and z acceleration values.</p><pre class="codeinput">plot(accelVector)
+</pre><img vspace="5" hspace="5" src="StepCounter_01.png" alt=""> <p>Transform the vector data into a scalar, and subtract gravity.</p><pre class="codeinput">accelScalar = sqrt(sum(accelVector.^2, 2));
+accelScalarNoGravity = accelScalar - 9.8;
+plot(accelScalarNoGravity)
+</pre><img vspace="5" hspace="5" src="StepCounter_02.png" alt=""> <p>Assume that we count a step whenever the acceleration goes from negative to positive value.  Find the indexes of these zero crossing events</p><pre class="codeinput">aboveZero = accelScalarNoGravity &gt; 0;
+zeroCrossing = diff(aboveZero) == 1;
+zeroCrossingIndex = find(zeroCrossing);
+</pre><p>Plot those events</p><pre class="codeinput">hold <span class="string">on</span>
+plot(zeroCrossingIndex, zeros(size(zeroCrossingIndex)), <span class="string">'r'</span>, <span class="string">'Marker'</span>, <span class="string">'v'</span>, <span class="string">'LineStyle'</span>, <span class="string">'none'</span>)
+hold <span class="string">off</span>
+</pre><img vspace="5" hspace="5" src="StepCounter_03.png" alt=""> <p>The number of steps is equal to the number of zero crossing events</p><pre class="codeinput">numberOfSteps = numel(zeroCrossingIndex)
+</pre><pre class="codeoutput">
+numberOfSteps =
+
+    32
+
+</pre><p class="footer">Copyright 2013 The MathWorks, Inc.<br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2013b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Count steps with acceleration data from your Apple or Android mobile device 
+% You can use the accelerometer in your mobile device to count steps in
+% MATLAB.
+%
+% Copyright 2013 The MathWorks, Inc.
+
+%% Connect to the mobile device
+% Use the |sensorgroup| object to create a connection to your mobile device.
+% In this case, we're using an Apple iPhone 3GS, but you can use an Android
+% device by passing |AndroidMobile| instead
+obj = sensorgroup('AppleMobile');
+
+%% Collect the acceleration data
+% Walk around for 30 seconds, then retrieve the data from the Acceleration
+% log
+pause(30)
+accelVector = accellog(obj);
+
+%%
+% Stop collecting data by clearing the variable from the workspace
+clear obj
+
+%% Analyze the acceleration data
+% The acceleration data is captured in an [n x 3] array, where the 3
+% columns represent the x, y, and z acceleration values.
+plot(accelVector)
+
+%%
+% Transform the vector data into a scalar, and subtract gravity.
+accelScalar = sqrt(sum(accelVector.^2, 2));
+accelScalarNoGravity = accelScalar - 9.8;
+plot(accelScalarNoGravity)
+
+%%
+% Assume that we count a step whenever the acceleration goes from negative
+% to positive value.  Find the indexes of these zero crossing events
+aboveZero = accelScalarNoGravity > 0;
+zeroCrossing = diff(aboveZero) == 1;
+zeroCrossingIndex = find(zeroCrossing);
+
+%%
+% Plot those events
+hold on
+plot(zeroCrossingIndex, zeros(size(zeroCrossingIndex)), 'r', 'Marker', 'v', 'LineStyle', 'none')
+hold off
+
+%%
+% The number of steps is equal to the number of zero crossing events
+numberOfSteps = numel(zeroCrossingIndex)
+
+##### SOURCE END #####
+--></body></html>

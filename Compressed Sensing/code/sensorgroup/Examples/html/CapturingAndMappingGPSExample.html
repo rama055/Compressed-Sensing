@@ -1,0 +1,304 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Capturing and Mapping GPS Example</title><meta name="generator" content="MATLAB 8.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-07-10"><meta name="DC.source" content="CapturingAndMappingGPSExample.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Capturing and Mapping GPS Example</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Capturing and mapping GPS data</a></li><li><a href="#2">Creation of the object</a></li><li><a href="#3">View the most recent values collected</a></li><li><a href="#7">Collect data for a period of time</a></li><li><a href="#8">Obtain the location coordinates</a></li><li><a href="#9">Filter out erroneous positions</a></li><li><a href="#10">Plot the coordinates in a figure window</a></li><li><a href="#12">Plot the points on a satellite image from the USGS national map</a></li><li><a href="#15">Plot the speed</a></li><li><a href="#16">Calculate various distances</a></li><li><a href="#18">Cleanup</a></li></ul></div><h2>Capturing and mapping GPS data<a name="1"></a></h2><p>This example shows how to collect and then display latitude and longitude data on a satellite map image.</p><h2>Creation of the object<a name="2"></a></h2><p>In this example, we will create an object for an Android device.</p><pre class="codeinput"><span class="comment">% Create the object</span>
+obj = sensorgroup(<span class="string">'AndroidMobile'</span>) <span class="comment">%#ok&lt;NOPTS&gt;</span>
+</pre><pre class="codeoutput">
+obj = 
+
+sensorgroup logging data from Android device on port 50000
+
+  Measurements: (showLatestValues)
+
+    Acceleration                        Orientation
+
+    Latitude                            Speed
+    Longitude
+    Altitude                            MagneticField
+</pre><h2>View the most recent values collected<a name="3"></a></h2><p>To collect some data first, we will pause for a few minutes to allow for some travel time.</p><pre class="codeinput">minutes = 5;
+seconds = minutes * 60;
+pause(seconds)
+</pre><p>To view the latest collected measurements, we will call the showLatestValues method.</p><pre class="codeinput">showLatestValues(obj)
+</pre><pre class="codeoutput">
+Measurement              Latest Values              Units   Log Size
+-------------  ----------------------------------  -------  --------
+Acceleration        12.38        4.80        2.66  m/s^2    &lt;1667x3&gt;
+Latitude            42.30                          degrees  &lt;12x1&gt;
+Longitude          -71.35                          degrees  &lt;12x1&gt;
+Altitude            40.80                          m        &lt;12x1&gt;
+Speed                2.00                          m/s      &lt;12x1&gt;
+
+Waiting for: MagneticField, and Orientation.  More information.
+
+</pre><p>We can also view the values individually.</p><pre class="codeinput">latitude = obj.Latitude
+longitude = obj.Longitude
+altitude = obj.Altitude
+</pre><pre class="codeoutput">
+latitude =
+
+   42.2988
+
+
+longitude =
+
+  -71.3514
+
+
+altitude =
+
+   40.8000
+
+</pre><p>It is important to keep in mind that a packet could have come arrived between each of those three lines of code above though, and that they may not all represent the same position in time.  To ensure the values are syncronized, we need to look at the logged values, using the methods of the object.  Let's continue and map the logged values.</p><h2>Collect data for a period of time<a name="7"></a></h2><p>To collect enough data to map, we will pause for a few more minutes to allow for travel time.</p><pre class="codeinput">minutes = 8;
+seconds = minutes * 60;
+pause(seconds)
+</pre><h2>Obtain the location coordinates<a name="8"></a></h2><pre class="codeinput">[lat, lon, sp, ~, ~, t, llacc, ~] = poslog(obj);
+</pre><h2>Filter out erroneous positions<a name="9"></a></h2><p>Keep only the latitude and longitude where the horizontal accuracy is less than one standard deviation of the horizontal accuracy.</p><pre class="codeinput">goodIndices = llacc &lt; std(llacc);
+lat = lat(goodIndices);
+lon = lon(goodIndices);
+sp = sp(goodIndices);
+t = t(goodIndices);
+llacc = llacc(goodIndices);
+</pre><h2>Plot the coordinates in a figure window<a name="10"></a></h2><p>Compute latlim and lonlim with a .05 buffer.</p><pre class="codeinput">[latlim, lonlim] = geoquadpt(lat, lon);
+[latlim, lonlim] = bufgeoquad(latlim, lonlim, (max(lat) - min(lat)), <span class="keyword">...</span>
+    (max(lon) - min(lon)));
+</pre><p>Create a map of the points.</p><pre class="codeinput">figure;
+usamap(latlim, lonlim)
+geoshow(lat, lon, <span class="string">'DisplayType'</span>, <span class="string">'line'</span>)
+</pre><img vspace="5" hspace="5" src="CapturingAndMappingGPSExample_01.png" alt=""> <h2>Plot the points on a satellite image from the USGS national map<a name="12"></a></h2><p>The USGS National Map provides ortho-imagery over the United States.</p><pre class="codeinput">info = wmsinfo(<span class="string">'http://raster.nationalmap.gov/arcgis/services/Orthoimagery/SDDS_Imagery/MapServer/WMSServer'</span>);
+layer = info.Layer(1);
+</pre><p>Obtain a base map from the server for the region of interest.</p><pre class="codeinput">[A, R] = wmsread(layer, <span class="string">'Latlim'</span>, latlim, <span class="string">'Lonlim'</span>, lonlim);
+</pre><p>Plot the points on the base map.</p><pre class="codeinput">figure
+usamap(A,R)
+geoshow(A,R)
+geoshow(lat, lon, <span class="string">'DisplayType'</span>, <span class="string">'line'</span>, <span class="string">'Color'</span>, <span class="string">'red'</span>, <span class="keyword">...</span>
+    <span class="string">'Marker'</span>, <span class="string">'diamond'</span>, <span class="string">'MarkerEdgeColor'</span>, <span class="string">'blue'</span>);
+</pre><img vspace="5" hspace="5" src="CapturingAndMappingGPSExample_02.png" alt=""> <h2>Plot the speed<a name="15"></a></h2><p>Plot the speed vs. time.</p><pre class="codeinput">figure;
+plot(t, sp);
+xlabel(<span class="string">'Timestamp'</span>)
+ylabel(<span class="string">'Speed(m/s)'</span>)
+</pre><img vspace="5" hspace="5" src="CapturingAndMappingGPSExample_03.png" alt=""> <h2>Calculate various distances<a name="16"></a></h2><p>Calculate the mean distances between points.</p><pre class="codeinput"><span class="comment">% Coordinates are from a GPS and referenced to WGS84 ellipsoid. WGS84 major</span>
+<span class="comment">% axis is in units of meters.</span>
+e = wgs84Ellipsoid;
+
+<span class="comment">% Compute distance from point-to-point. dist is in units of meters.</span>
+dist = distance(lat(1:end-1), lon(1:end-1), lat(2:end), lon(2:end), e);
+
+<span class="comment">% Remove any NaN values.</span>
+dist(isnan(dist)) = [];
+
+<span class="comment">% Mean value.</span>
+meanDistanceBetweenPoints = mean(dist)
+</pre><pre class="codeoutput">
+meanDistanceBetweenPoints =
+
+   17.0444
+
+</pre><p>Calculate the total distance traveled.</p><pre class="codeinput"><span class="comment">% Total distance traveled.</span>
+totalDistanceTraveled = sum(dist)
+</pre><pre class="codeoutput">
+totalDistanceTraveled =
+
+  869.2621
+
+</pre><h2>Cleanup<a name="18"></a></h2><p>When you are done, the object should be deleted to free up the resources occupied by the object.</p><pre class="codeinput">delete(obj)
+</pre><p class="footer">Copyright 2013 The MathWorks, Inc.<br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2013b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Capturing and Mapping GPS Example
+%
+% Copyright 2013 The MathWorks, Inc.
+
+%% Capturing and mapping GPS data
+% This example shows how to collect and then display latitude and longitude
+% data on a satellite map image.
+
+%% Creation of the object
+% In this example, we will create an object for an Android
+% device.
+
+% Create the object
+obj = sensorgroup('AndroidMobile') %#ok<NOPTS>
+
+%% View the most recent values collected
+% To collect some data first, we will pause for a few minutes to allow for
+% some travel time.
+
+minutes = 5;
+seconds = minutes * 60;
+pause(seconds)
+
+%%
+% To view the latest collected measurements, we will call the
+% showLatestValues method.
+showLatestValues(obj)
+
+%%
+% We can also view the values individually.
+
+latitude = obj.Latitude
+longitude = obj.Longitude
+altitude = obj.Altitude
+
+%%
+% It is important to keep in mind that a packet could have come arrived
+% between each of those three lines of code above though, and that they may
+% not all represent the same position in time.  To ensure the values are
+% syncronized, we need to look at the logged values, using the methods of
+% the object.  Let's continue and map the logged values.
+
+%% Collect data for a period of time
+% To collect enough data to map, we will pause for a few more minutes to
+% allow for travel time.
+
+minutes = 8;
+seconds = minutes * 60;
+pause(seconds)
+
+%% Obtain the location coordinates
+[lat, lon, sp, ~, ~, t, llacc, ~] = poslog(obj);
+
+%% Filter out erroneous positions
+% Keep only the latitude and longitude where the horizontal accuracy is
+% less than one standard deviation of the horizontal accuracy.
+goodIndices = llacc < std(llacc);
+lat = lat(goodIndices);
+lon = lon(goodIndices);
+sp = sp(goodIndices);
+t = t(goodIndices);
+llacc = llacc(goodIndices);
+
+%% Plot the coordinates in a figure window
+% Compute latlim and lonlim with a .05 buffer.
+[latlim, lonlim] = geoquadpt(lat, lon);
+[latlim, lonlim] = bufgeoquad(latlim, lonlim, (max(lat) - min(lat)), ...
+    (max(lon) - min(lon)));
+
+%%
+% Create a map of the points.
+figure;
+usamap(latlim, lonlim)
+geoshow(lat, lon, 'DisplayType', 'line')
+
+%% Plot the points on a satellite image from the USGS national map
+% The USGS National Map provides ortho-imagery over the United States.
+info = wmsinfo('http://raster.nationalmap.gov/arcgis/services/Orthoimagery/SDDS_Imagery/MapServer/WMSServer');
+layer = info.Layer(1);
+
+%%
+% Obtain a base map from the server for the region of interest.
+[A, R] = wmsread(layer, 'Latlim', latlim, 'Lonlim', lonlim);
+
+%%
+% Plot the points on the base map.
+figure
+usamap(A,R)
+geoshow(A,R)
+geoshow(lat, lon, 'DisplayType', 'line', 'Color', 'red', ...
+    'Marker', 'diamond', 'MarkerEdgeColor', 'blue');
+
+%% Plot the speed
+% Plot the speed vs. time.
+figure;
+plot(t, sp);
+xlabel('Timestamp')
+ylabel('Speed(m/s)')
+
+%% Calculate various distances
+% Calculate the mean distances between points.
+
+% Coordinates are from a GPS and referenced to WGS84 ellipsoid. WGS84 major
+% axis is in units of meters.
+e = wgs84Ellipsoid;
+
+% Compute distance from point-to-point. dist is in units of meters.
+dist = distance(lat(1:end-1), lon(1:end-1), lat(2:end), lon(2:end), e);
+
+% Remove any NaN values.
+dist(isnan(dist)) = [];
+
+% Mean value.
+meanDistanceBetweenPoints = mean(dist)
+
+%%
+% Calculate the total distance traveled.
+
+% Total distance traveled.
+totalDistanceTraveled = sum(dist)
+
+%% Cleanup
+% When you are done, the object should be deleted to free up the resources
+% occupied by the object.
+
+delete(obj)
+
+
+
+
+
+
+
+##### SOURCE END #####
+--></body></html>

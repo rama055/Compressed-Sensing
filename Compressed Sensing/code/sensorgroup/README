@@ -1,0 +1,107 @@
+
+MATLAB support for iPhone and Android Sensors enables you to read sensor 
+data from a mobile device (Apple or Android platforms) connected to the same 
+network as a computer running MATLAB. To start using this functionality, 
+you have to install the supported mobile app on your device and the MATLAB 
+support files from this File Exchange submission on your computer.  
+The currently supported mobile apps are:
+
+Android (mobile phones and tablets): SensorUdp by Takashi, Sasaki
+Apple (iPhone, iPad and iPod Touch): Sensor Monitor by Ko, Young-woo
+ 
+  
+INSTALLATION
+
+On your Android Device
+Using your Android device or browser on your PC go to Google Play and install SensorUdp. 
+
+On your Apple Device
+Using your Apple device or iTunes go to Apple Store and install 
+Sensor Monitor app from there. After you install this app, start it and 
+go to More -> About and upgrade to the Pro version, otherwise the app will 
+not send sensor data over the network.
+
+In MATLAB
+1. Unzip sensorgroup.zip to the location where you want the files to 
+   permanently live. (You've probably already done this if you are reading this) 
+2. Open MATLAB. Using the MATLAB Current Folder panel, navigate to the 
+   sensorgroup folder which you will have after you unzip sensorgroup.zip.
+3. Run setupmobile.m 
+ 
+
+HOW TO USE
+Before you start using it, please connect your device to the same network as 
+the host computer where you are running MATLAB. You may use Wi-Fi or 
+cellular network, and depending on your network setup, in some cases you 
+may need to use a VPN. Please note, that due to the nature of communication 
+protocol (UDP) that is used by the mobile app, the app will not complain if data 
+packets cannot reach the host machine.  
+
+Set up and read data from an Apple device:
+
+1. Open Sensor Monitor app.
+2. In MATLAB, enter: obj = sensorgroup('AppleMobile')
+   MATLAB displays instructions for configuring Sensor Monitor.
+3. In Sensor Monitor, select the Network tab and change Current Send Mode 
+   to Binary. Enter the dest. host and port values as displayed in the instructions. 
+   Tap Start Send. If configured properly, MATLAB displays a message 
+   that it is logging data from the mobile device, including a list of measurements. 
+   Leave the Sensor Monitor app open and running in the foreground. If it goes 
+   to the background, iOS will stop the app after some time and it will stop sending data.
+4. In MATLAB, display the current data by entering: showLatestValues(obj)
+   MATLAB displays the measurements, latest values, units, and log size for 
+   each measurement. It identifies measurements for which it has not received data.
+5. When you are done, in Sensor Monitor, tap Stop Send.
+
+Set up and read data from an Android device:
+
+1. Open SensorUdp app.
+2. In MATLAB, enter: obj = sensorgroup('AndroidMobile')
+   MATLAB displays instructions for configuring SensorUdp.
+3. In SensorUdp, update the dest. host and port values. 
+4. In SensorUdp, use the check boxes for accelerometer cvs line, 
+   magnetic field cvs line, and orientation cvs line to choose which 
+   sensors send data. Then, tap the Send button. MATLAB displays a message 
+   that it is logging data from the mobile device, including a list of sensors.
+5. In MATLAB, display the current data by entering: showLatestValues(obj)
+   MATLAB displays the measurements, latest values, units, and log size for 
+   each measurement. It also identifies measurements for which it has not received data.
+6. When you are done, exit from the app by pressing the Android Back button. 
+   In order to increase battery life, it’s recommended to open the 
+   Android Task Manager and make sure that SensorUdp is not running after you finished.
+
+HOW TO ACCESS RECEIVED DATA (Apple and Android Devices)
+Use showLatestValues to display a list of measurement names and the most 
+recent value for each one. For example:
+
+    showLatestValues(obj)
+
+You can also get the latest value of a specific measurement listed by showLatestValues. 
+For example:
+
+    obj.Acceleration
+
+You can use sensorgroup methods to access the logged measurement values.
+For example, to get logged acceleration values call:
+
+    [a, t] = accellog(obj)
+
+Run "help sensorgroup" to get more information.
+
+
+TROUBLESHOOTING 
+If MATLAB does not receive data from the mobile device:
+Symptom: MATLAB does not display "logging data from the mobile device" message 
+after you tap the Send or Start Send button in the app on the mobile device.
+Verify or try the following:
+- In the app on the mobile device:
+  Enable the sensors.
+  Set the IP address and port number provided by MATLAB. 
+  If MATLAB provides multiple IP addresses, try each one.
+  Tap the Send or Start Send button.
+- The mobile device is connected to the correct Wi-Fi network. Airplane mode is off.
+- The host computer running MATLAB is connected to the network.
+- Routers on the network are configured to pass UDP traffic for the specified  port number.
+
+Happy sensing!
+

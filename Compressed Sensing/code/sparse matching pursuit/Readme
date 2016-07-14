@@ -1,0 +1,84 @@
+
+                CODE FOR SPARSE RECOVERY EXPERIMENTS
+
+
+        Introduction
+
+    This package contains the framework used to perform sparse recovery
+experiments like those in papers BI08, BGIKS08, BIR08.
+
+    The base functions are:
+        gen_matrix.m - generates a given type of measurement matrix
+        gen_signal.m - generates a test signal
+        experiment.m - performs a sparse recovery experiment
+    
+    A small demo of how to use these functions is shown in demo.m. (Note: you
+might need to compile some of the mex files for your platform, see below; also
+for the image part of the demo you need to have Matlab's Wavelet Toolbox
+installed).
+
+    Important high level programs are:
+        sparse_experiments.m -
+            Used to generate a probability of exact recovery plot. The range of
+            parameters (N, Ms, Ks, attempts) is set from inside this file.
+
+        sparse_experiments_distributed.m -
+            Matlab DCT cluster version of the above.
+
+        benchmark.m -
+            Performs a runtime benchmark of a set of algorithms.
+
+        sparse_experiments_plot.m, benchmark_plot.m -
+            Generate plots from the experiment data.
+
+    There are also programs to perform image experiments; see load_image.m,
+image_experiment.m, and image_test.m .
+
+    All .m files contain documentation, which can be seen by viewing the
+file or using the Matlab command help (e.g. "help benchmark").
+
+    Note: init.m adds relevant subdirectories to the Matlab path. It is ran
+inside most programs, but it can also be called manually at the start of the
+Matlab session for safety.
+
+    
+        Installing solvers for LP experiments
+
+    To perform LP experiments, l1magic must be installed. Download the l1magic
+archive from http://www.acm.caltech.edu/l1magic/ . Unpack the archive so that
+the l1magic directory is at the root of the code installation (i.e. l1magic is a
+directory along with Matrices, Util, etc.)
+
+To use GPSR, the GPSR_BB.m program must be placed in the root directory of the
+code installation. The GPSR website is http://www.lx.it.pt/~mtf/GPSR/ .
+
+
+        Compiling the C programs (MEX)
+
+    The important (bottleneck) parts are implemented as C programs which Matlab
+calls as MEX files. These files are in Util. Compiled binaries are included for
+Windows (32-bit Matlab) and Linux (64-bit). For other platforms, one needs to
+compile them by running "mex <file.c>". The mex script comes with Matlab (it
+should be in the run path). The Util directory contains compile.bat and
+compile.sh scripts to call mex on all the c files there.
+
+
+        Authors
+
+    Radu Berinde, MIT, texel@mit.edu
+    Piotr Indyk, MIT, indyk@mit.edu
+
+
+        References
+
+BI08 R. Berinde and P. Indyk, Sparse recovery using sparse random matrices.
+     ''MIT-CSAIL Technical Report'', 2008.
+
+BGIKS08 R. Berinde, A. Gilbert, P. Indyk, H. Karloff, and M. Strauss. Combining
+        geometry and combinatorics: a unified approach to sparse signal
+        recovery, ''Allerton'', 2008.
+
+BIR08 R. Berinde, P.Indyk, and M. Ružic. Practical Near-optimal Sparse Recovery
+      in the L1 Norm, ''Allerton'', 2008
+
+
